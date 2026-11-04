@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ödev Takip</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1f2a5a">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Ödevler">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<style>
+:root{--bg:#eef1f7;--ink:#141824;--mut:#6b7286;--card:#fff;--line:#dde2ec;--danger:#d23b3b;--nav:rgba(255,255,255,.88);--ok:#1fa968;--eks:#f0a020}
+@media (prefers-color-scheme:dark){:root{--bg:#0f121a;--ink:#eef0f6;--mut:#9aa2b6;--card:#1a1e29;--line:#2a3042;--danger:#ff7b7b;--nav:rgba(26,30,41,.9);--ok:#34c985;--eks:#f5b040}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}
+.wrap{max-width:560px;margin:0 auto;padding:max(18px,env(safe-area-inset-top)) 16px 120px}
+.hide{display:none!important}
+.hello{margin:6px 0 2px;font-size:30px;font-weight:800;letter-spacing:-.8px}
+.date{color:var(--mut);text-transform:capitalize;margin-bottom:16px}
+.sum{background:linear-gradient(135deg,#1f2a5a,#3a2a78);color:#fff;border-radius:22px;padding:18px;margin-bottom:18px;box-shadow:0 10px 24px rgba(40,40,110,.25)}
+.sum b{font-size:34px;letter-spacing:-1px}.sum span{opacity:.8;font-size:14px}
+.sum .ln{font-size:14px;margin-top:10px;opacity:.95}
+.bar{height:9px;background:rgba(255,255,255,.22);border-radius:9px;margin-top:8px;overflow:hidden;display:flex}
+.bar i{display:block;height:100%;transition:width .5s}
+.bar .a{background:#fff}.bar .b{background:rgba(255,255,255,.55)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.tile{border:0;border-radius:24px;height:150px;color:#fff;cursor:pointer;position:relative;overflow:hidden;text-align:left;padding:16px;display:flex;flex-direction:column;justify-content:flex-end;box-shadow:0 10px 20px var(--sh);background:linear-gradient(145deg,var(--a),var(--b))}
+.tile::before{content:attr(data-l);position:absolute;right:-6px;top:-24px;font:900 120px/1 system-ui;color:rgba(255,255,255,.16)}
+.tile:active{transform:scale(.96)}
+.tile strong{font-size:22px;letter-spacing:-.4px;position:relative}
+.tile small{font-size:12.5px;opacity:.95;position:relative;margin-top:2px}
+.tile .bar{position:relative;height:6px;margin-top:7px}
+.tile .n{position:absolute;top:12px;right:14px;font-size:13px;font-weight:700;background:rgba(255,255,255,.28);border-radius:20px;padding:1px 9px}
+.wide{margin-top:14px;border-radius:24px;padding:18px;color:#fff;position:relative;overflow:hidden;background:linear-gradient(145deg,#3b4a78,#252e52);box-shadow:0 10px 20px #252e5255;transition:background .4s}
+.wide.hot{background:linear-gradient(145deg,#ff5a4d,#c4161c);box-shadow:0 10px 20px #c4161c66}
+.wide::before{content:"%";position:absolute;right:-4px;top:-26px;font:900 130px/1 system-ui;color:rgba(255,255,255,.14)}
+.wide .wt{font-size:15px;font-weight:700;opacity:.9;position:relative}
+.wide .wp{font-size:40px;font-weight:800;letter-spacing:-1px;position:relative;line-height:1.15}
+.wide .fl{display:inline-block;font-size:34px}
+.wide .ws{font-size:14px;opacity:.95;position:relative;margin-top:2px}
+.wide .bar{position:relative;height:9px;margin-top:12px}
+.rem{margin-bottom:16px}
+.rl{background:var(--card);border:1px solid var(--line);border-left:6px solid var(--eks);border-radius:14px;padding:10px 14px;margin-bottom:8px;font-size:15px}
+.rl.r{border-left-color:var(--danger)}.rl.r .w{color:var(--danger)}
+.rl b{font-weight:700}
+.tch{border:1px dashed var(--line);background:none;color:var(--mut);border-radius:12px;padding:7px 12px;font:600 14px system-ui;cursor:pointer;margin:-4px 0 14px}
+.top{display:flex;align-items:center;gap:10px;margin:6px 0 14px}
+.back{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:14px;width:44px;height:44px;font-size:22px;cursor:pointer}
+.top h1{margin:0;flex:1;font-size:28px;letter-spacing:-.6px}
+.add{border:0;border-radius:14px;padding:12px 16px;font:700 15px system-ui;color:#fff;cursor:pointer}
+h1.page{font-size:30px;font-weight:800;letter-spacing:-.8px;margin:6px 0 14px}
+h3.grp{font-size:14px;color:var(--mut);margin:20px 0 8px;font-weight:700}
+h3.grp.red{color:var(--danger)}
+.sc{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px 16px;margin-bottom:16px}
+.sc .tx{font-size:15px}.sc .tx b{font-size:20px}
+.sc .bar2{height:10px;background:var(--line);border-radius:10px;margin-top:9px;overflow:hidden;display:flex}
+.sc .bar2 i{display:block;height:100%;transition:width .5s}
+.sc .g{background:var(--ok)}.sc .y{background:var(--eks)}
+.sc .leg{font-size:13px;color:var(--mut);margin-top:8px}
+.item{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:13px 14px;margin-bottom:10px;position:relative;overflow:hidden}
+.item::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--c)}
+.item.done .t{text-decoration:line-through;opacity:.65}
+.t{font-weight:600;white-space:pre-wrap;word-break:break-word;padding-left:6px}
+.chip{display:inline-block;color:#fff;font-size:12px;font-weight:700;padding:2px 10px;border-radius:20px;margin:6px 0 0 6px;cursor:pointer}
+.meta{font-size:14px;color:var(--mut);margin:5px 0 0 6px}
+.late{color:var(--danger);font-weight:700}
+.badge{display:inline-block;font-size:12.5px;font-weight:700;color:#fff;border-radius:20px;padding:2px 10px;margin:7px 0 0 6px}
+.badge.tam{background:var(--ok)}.badge.eks{background:var(--eks);color:#2a1d00}
+.act{margin:10px 0 0 6px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.sb{border:0;border-radius:12px;padding:9px 13px;font:700 14px system-ui;cursor:pointer}
+.sb.tam{background:var(--ok);color:#fff}.sb.eks{background:var(--eks);color:#2a1d00}
+.sb.und{background:var(--bg);color:var(--ink)}
+.lk{border:0;background:none;color:var(--mut);font:600 14px system-ui;padding:6px 4px;cursor:pointer;text-decoration:underline}
+.empty{text-align:center;color:var(--mut);padding:50px 10px}
+nav{position:fixed;left:50%;transform:translateX(-50%);bottom:max(14px,env(safe-area-inset-bottom));width:min(420px,calc(100% - 28px));display:flex;background:var(--nav);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:26px;padding:6px;box-shadow:0 12px 30px rgba(0,0,0,.18);z-index:4}
+nav button{flex:1;border:0;background:none;color:var(--mut);font:700 14px system-ui;padding:12px 4px;border-radius:20px;cursor:pointer}
+nav button.on{background:var(--ink);color:var(--bg)}
+nav em{font-style:normal;font-size:11px;background:var(--danger);color:#fff;border-radius:10px;padding:0 6px;margin-left:4px}
+.modal{position:fixed;inset:0;background:rgba(10,12,18,.55);display:none;align-items:flex-end;justify-content:center;z-index:9}
+.modal.on{display:flex}
+.sheet{background:var(--card);width:100%;max-width:560px;border-radius:24px 24px 0 0;padding:20px 18px max(22px,env(safe-area-inset-bottom));max-height:92vh;overflow:auto}
+.sheet h2{margin:0 0 8px;font-size:21px}
+label{display:block;font-size:14px;color:var(--mut);margin:12px 0 4px}
+input[type=text],input[type=date],textarea{width:100%;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:12px;padding:12px;font:16px system-ui}
+textarea{min-height:80px;resize:vertical}
+.dates{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btns{display:flex;gap:10px;margin-top:18px}
+.btns button{flex:1;border:0;border-radius:14px;padding:14px;font:700 16px system-ui;cursor:pointer}
+.cancel{background:var(--bg);color:var(--ink)}.save{color:#fff}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="v-home">
+    <div class="hello">Merhaba Demir</div>
+    <div class="date" id="date"></div>
+    <div class="rem" id="rem"></div>
+    <div class="sum"><b id="sum-n"></b> <span id="sum-t"></span>
+</div>
+    <div class="grid" id="grid"></div>
+    <div id="three"></div>
+  </div>
+  <div id="v-sub" class="hide">
+    <div class="top"><button class="back" id="back" aria-label="Geri">‹</button><h1 id="stitle"></h1><button class="add" id="addbtn">Ödev ekle</button></div>
+    <button class="tch" id="tbtn"></button>
+    <div id="substat"></div><div id="list"></div>
+  </div>
+  <div id="v-up" class="hide"><h1 class="page">Yaklaşanlar</h1><div id="upstat"></div><div id="uplist"></div></div>
+  <div id="v-done" class="hide"><h1 class="page">Tamamlananlar</h1><div id="donestat"></div><div id="donelist"></div></div>
+</div>
+
+<nav>
+  <button data-v="home" class="on">Dersler</button>
+  <button data-v="up">Yaklaşan<em id="badge" class="hide"></em></button>
+  <button data-v="done">Biten</button>
+</nav>
+
+<div class="modal" id="tmodal"><div class="sheet">
+  <h2 id="tt">Hoca</h2>
+  <label for="f-t">Hocanın adı</label>
+  <input type="text" id="f-t" maxlength="40" placeholder="Örn. Ahmet Hoca">
+  <div class="btns"><button class="cancel" id="tcancel">Vazgeç</button><button class="save" id="tsave">Kaydet</button></div>
+</div></div>
+
+<div class="modal" id="modal"><div class="sheet">
+  <h2 id="mtitle">Yeni ödev</h2>
+  <label for="f-desc">Ödev açıklaması</label>
+  <textarea id="f-desc" placeholder="Ne yapılacak?"></textarea>
+  <label for="f-where">Neresi yapılacak</label>
+  <input type="text" id="f-where" placeholder="Örn. Test kitabı s. 45-48">
+  <div class="dates"><div><label for="f-start">Başlangıç</label><input type="date" id="f-start"></div><div><label for="f-end">Bitiş</label><input type="date" id="f-end"></div></div>
+  <div id="err" style="color:var(--danger);font-size:14px;margin-top:10px"></div>
+  <div class="btns"><button class="cancel" id="cancel">Vazgeç</button><button class="save" id="save">Kaydet</button></div>
+</div></div>
+
+<script>
+var SUBJECTS=[["Fizik","#4f7cff","#2747c9"],["Kimya","#1fc29a","#0b8a6c"],["Matematik","#ff8a3d","#d9531a"],["Türkçe","#e84fa6","#b02677"],["Geometri","#9a6bff","#6035c9"],["Biyoloji","#7cc72f","#4a8a12"]];
+var KEY="odevTakipV1",data={},cur=null,editId=null,view="home";
+try{data=JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){data={}}
+Object.keys(data).forEach(function(k){data[k].forEach(function(x){if(x.done&&!x.st)x.st="tam"})});
+var teachers={};
+try{teachers=JSON.parse(localStorage.getItem("odevTakipHoca")||"{}")}catch(e){teachers={}}
+function saveT(){try{localStorage.setItem("odevTakipHoca",JSON.stringify(teachers))}catch(e){}}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(data))}catch(e){}}
+function $(i){return document.getElementById(i)}
+function S(n){for(var i=0;i<SUBJECTS.length;i++)if(SUBJECTS[i][0]===n)return SUBJECTS[i]}
+function pad(n){return String(n).padStart(2,"0")}
+function ds(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())}
+function today(){return ds(new Date())}
+function plus(n){var d=new Date();d.setDate(d.getDate()+n);return ds(d)}
+function fmt(d){if(!d)return"";var p=d.split("-");return p[2]+"."+p[1]+"."+p[0]}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function all(){var r=[];SUBJECTS.forEach(function(s){(data[s[0]]||[]).forEach(function(x){r.push({s:s[0],x:x})})});return r}
+function stats(L){var r={total:L.length,tam:0,eks:0,bek:0,ok:0,okTam:0,okEks:0};
+  L.forEach(function(x){if(!x.st){r.bek++;return}
+    if(x.st==="tam")r.tam++;else r.eks++;
+    var late=x.end&&x.doneAt&&x.doneAt>x.end;
+    if(!late){r.ok++;if(x.st==="tam")r.okTam++;else r.okEks++}});
+  return r}
+function pct(a,b){return b?(a/b*100):0}
+function statCard(L){
+  var s=stats(L),d=document.createElement("div");d.className="sc";
+  if(!s.total){d.innerHTML='<div class="tx">Henüz ödev yok.</div>';return d}
+  d.innerHTML='<div class="tx"><b>'+s.ok+"/"+s.total+"</b> ödevi kaçırmadan yaptın</div>"+
+    '<div class="bar2"><i class="g" style="width:'+pct(s.okTam,s.total)+'%"></i><i class="y" style="width:'+pct(s.okEks,s.total)+'%"></i></div>'+
+    '<div class="leg">'+s.tam+" tam · "+s.eks+" eksik · "+s.bek+" bekliyor</div>";
+  return d}
+function setSt(x,st){x.st=st;if(st){if(!x.doneAt)x.doneAt=today()}else x.doneAt=null;persist();render()}
+
+function item(sn,x,chip){
+  var c=S(sn)[1],t=today(),late=!x.st&&x.end&&x.end<t,lateDone=x.st&&x.end&&x.doneAt&&x.doneAt>x.end;
+  var range=(x.start||x.end)?fmt(x.start)+" – "+fmt(x.end):"";
+  var d=document.createElement("div");d.className="item"+(x.st?" done":"");d.style.setProperty("--c",c);
+  d.innerHTML='<div class="t">'+esc(x.desc)+'</div>'+
+    (chip?'<span class="chip" style="background:'+c+'">'+sn+'</span>':"")+
+    (x.where?'<div class="meta">Yer: '+esc(x.where)+'</div>':"")+
+    (range?'<div class="meta'+(late?" late":"")+'">'+range+(late?" · süresi geçti":"")+'</div>':"")+
+    (x.st?'<span class="badge '+(x.st==="tam"?"tam":"eks")+'">'+(x.st==="tam"?"Tam yapıldı":"Eksik yapıldı")+'</span>'+(lateDone?'<span class="meta late"> geç yapıldı</span>':""):"")+
+    '<div class="act"></div>';
+  var a=d.querySelector(".act");
+  function btn(cls,txt,fn){var b=document.createElement("button");b.className=cls;b.textContent=txt;b.onclick=fn;a.appendChild(b);return b}
+  if(x.st!=="tam")btn("sb tam","Tam yaptım",function(){setSt(x,"tam")});
+  if(x.st!=="eksik")btn("sb eks","Eksik yaptım",function(){setSt(x,"eksik")});
+  if(x.st)btn("sb und","Geri al",function(){setSt(x,null)});
+  btn("lk","Düzenle",function(){cur=sn;openForm(x)});
+  var db=btn("lk","Sil",null),armed=false,tm;
+  db.onclick=function(){
+    if(!armed){armed=true;db.textContent="Silmek için tekrar dokun";db.style.color="var(--danger)";tm=setTimeout(function(){armed=false;db.textContent="Sil";db.style.color=""},3000);return}
+    clearTimeout(tm);data[sn]=data[sn].filter(function(y){return y.id!==x.id});persist();render();
+  };
+  var ch=d.querySelector(".chip");if(ch)ch.onclick=function(){openSubject(sn)};
+  return d;
+}
+
+function render(){
+  ["home","sub","up","done"].forEach(function(v){$("v-"+v).classList.toggle("hide",v!==view)});
+  document.querySelectorAll("nav button").forEach(function(b){b.classList.toggle("on",b.dataset.v===(view==="sub"?"home":view))});
+  var A=all(),t=today();
+  var over=A.filter(function(a){return!a.x.st&&a.x.end&&a.x.end<t}).length;
+  $("badge").textContent=over;$("badge").classList.toggle("hide",!over);
+  if(view==="home")renderHome(A);
+  if(view==="sub")renderSub();
+  if(view==="up")renderUp(A);
+  if(view==="done")renderDone(A);
+}
+function renderHome(A){
+  $("date").textContent=new Date().toLocaleDateString("tr-TR",{weekday:"long",day:"numeric",month:"long"});
+  var s=stats(A.map(function(a){return a.x}));
+  $("sum-n").textContent=s.bek;
+  $("sum-t").textContent=s.total?(s.bek?" bekleyen ödev":" · hepsi bitti 🎉"):" ödev · eklemek için bir derse dokun";
+  var g=$("grid");g.innerHTML="";
+  SUBJECTS.forEach(function(sj){
+    var st=stats(data[sj[0]]||[]);
+    var b=document.createElement("button");b.className="tile";b.dataset.l=sj[0][0];
+    b.style.setProperty("--a",sj[1]);b.style.setProperty("--b",sj[2]);b.style.setProperty("--sh",sj[2]+"55");
+    b.innerHTML=(st.bek?'<span class="n">'+st.bek+'</span>':"")+"<strong>"+sj[0]+"</strong>"+(teachers[sj[0]]?"<small>"+esc(teachers[sj[0]])+"</small>":"");
+    b.onclick=function(){openSubject(sj[0])};g.appendChild(b);
+  });
+  renderThree(A);renderRem(A);
+}
+function renderRem(A){
+  var t=today(),tm=plus(1),M={};
+  A.forEach(function(a){var x=a.x;if(x.st||!x.end||x.end>tm)return;
+    var m=M[a.s]=M[a.s]||{o:0,d:0,y:0};
+    if(x.end<t)m.o++;else if(x.end===t)m.d++;else m.y++;});
+  var rows=[];
+  Object.keys(M).forEach(function(k){var m=M[k],parts=[];
+    if(m.o)parts.push(m.o+" ödevin süresi geçti");
+    if(m.d)parts.push(m.d+" ödev bugün teslim");
+    if(m.y)parts.push(m.y+" ödev yarın teslim");
+    rows.push({pr:m.o?0:(m.d?1:2),o:m.o,h:"<b>"+(teachers[k]?esc(teachers[k])+" ("+k+")":k)+"</b>: "+parts.join(", ")})});
+  rows.sort(function(a,b){return a.pr-b.pr});
+  $("rem").innerHTML=rows.map(function(r){return '<div class="rl'+(r.o?" r":"")+'">'+r.h+'</div>'}).join("");
+}
+function renderThree(A){
+  var t=today(),from=plus(-20),n=0,ok=0,pend=0;
+  A.forEach(function(a){var x=a.x,e=x.end,inEnd=e&&e>=from&&e<=t,inDone=x.st&&x.doneAt&&x.doneAt>=from&&x.doneAt<=t;
+    if(x.st&&!inEnd&&!inDone)return;
+    n++;if(!x.st)pend++;
+    if(x.st&&!(e&&x.doneAt&&x.doneAt>e))ok++;});
+  var p=n?Math.round(ok/n*100):0,hot=n>0&&p>70,w=$("three");
+  w.innerHTML='<div class="wide'+(hot?" hot":"")+'"><div class="wt">Son 3 hafta</div>'+
+    (n?'<div class="wp">%'+p+(hot?' <span class="fl">🔥</span>':"")+'</div><div class="ws">'+ok+"/"+n+" ödevi kaçırmadan yaptın"+(pend?" · "+pend+" bekliyor":"")+"</div>"
+      :'<div class="ws">Son 3 haftada henüz ödev yok</div>')+
+    '<div class="bar"><i class="a" style="width:'+p+'%"></i></div></div>';
+}
+function renderSub(){
+  var L=$("list"),items=(data[cur]||[]).slice();
+  $("tbtn").textContent=teachers[cur]?"Hoca: "+teachers[cur]+" ✎":"+ Hoca ekle";
+  $("substat").innerHTML="";$("substat").appendChild(statCard(items));
+  items.sort(function(a,b){return(!!a.st-!!b.st)||((a.end||"9")>(b.end||"9")?1:-1)});
+  L.innerHTML="";
+  if(!items.length){L.innerHTML='<div class="empty">Henüz ödev yok. “Ödev ekle” ile başla.</div>';return}
+  items.forEach(function(x){L.appendChild(item(cur,x,false))});
+}
+function renderUp(A){
+  var box=$("uplist");box.innerHTML="";$("upstat").innerHTML="";
+  $("upstat").appendChild(statCard(A.map(function(a){return a.x})));
+  var t=today(),w=plus(7);
+  var open=A.filter(function(a){return!a.x.st}).sort(function(a,b){return(a.x.end||"9")>(b.x.end||"9")?1:-1});
+  var G=[["Süresi geçenler",open.filter(function(a){return a.x.end&&a.x.end<t}),"red"],
+         ["Bu hafta",open.filter(function(a){return a.x.end&&a.x.end>=t&&a.x.end<=w})],
+         ["Daha sonra",open.filter(function(a){return a.x.end&&a.x.end>w})],
+         ["Tarihsiz",open.filter(function(a){return!a.x.end})]];
+  var any=false;
+  G.forEach(function(g){if(!g[1].length)return;any=true;
+    var h=document.createElement("h3");h.className="grp "+(g[2]||"");h.textContent=g[0];box.appendChild(h);
+    g[1].forEach(function(a){box.appendChild(item(a.s,a.x,true))});});
+  if(!any)box.innerHTML='<div class="empty">Bekleyen ödev yok.</div>';
+}
+function renderDone(A){
+  var box=$("donelist");box.innerHTML="";$("donestat").innerHTML="";
+  $("donestat").appendChild(statCard(A.map(function(a){return a.x})));
+  var d=A.filter(function(a){return a.x.st});
+  if(!d.length){box.innerHTML='<div class="empty">Henüz tamamlanan ödev yok.</div>';return}
+  d.forEach(function(a){box.appendChild(item(a.s,a.x,true))});
+}
+
+function openSubject(n){cur=n;view="sub";$("stitle").textContent=n;$("addbtn").style.background=S(n)[1];render();window.scrollTo(0,0)}
+function openForm(x){
+  editId=x?x.id:null;
+  $("mtitle").textContent=x?"Ödevi düzenle":"Yeni ödev · "+cur;
+  $("f-desc").value=x?x.desc:"";$("f-where").value=x?x.where:"";
+  $("f-start").value=x?x.start:today();$("f-end").value=x?x.end:"";
+  $("save").style.background=S(cur)[1];
+  $("err").textContent="";$("modal").classList.add("on");$("f-desc").focus();
+}
+function closeForm(){$("modal").classList.remove("on")}
+$("save").onclick=function(){
+  var desc=$("f-desc").value.trim();
+  if(!desc){$("err").textContent="Ödev açıklaması boş olamaz.";return}
+  var s=$("f-start").value,e=$("f-end").value;
+  if(s&&e&&e<s){$("err").textContent="Bitiş tarihi başlangıçtan önce olamaz.";return}
+  data[cur]=data[cur]||[];
+  if(editId){var o=data[cur].filter(function(y){return y.id===editId})[0];o.desc=desc;o.where=$("f-where").value.trim();o.start=s;o.end=e}
+  else data[cur].push({id:Date.now()+""+Math.floor(Math.random()*1000),desc:desc,where:$("f-where").value.trim(),start:s,end:e,st:null});
+  persist();closeForm();render();
+};
+$("cancel").onclick=closeForm;
+$("tbtn").onclick=function(){$("tt").textContent=cur+" hocası";$("f-t").value=teachers[cur]||"";$("tsave").style.background=S(cur)[1];$("tmodal").classList.add("on");$("f-t").focus()};
+$("tcancel").onclick=function(){$("tmodal").classList.remove("on")};
+$("tsave").onclick=function(){var v=$("f-t").value.trim();if(v)teachers[cur]=v;else delete teachers[cur];saveT();$("tmodal").classList.remove("on");render()};
+$("tmodal").onclick=function(e){if(e.target===this)this.classList.remove("on")};
+$("modal").onclick=function(e){if(e.target===this)closeForm()};
+$("addbtn").onclick=function(){openForm(null)};
+$("back").onclick=function(){view="home";render()};
+document.querySelectorAll("nav button").forEach(function(b){b.onclick=function(){view=b.dataset.v;render();window.scrollTo(0,0)}});
+render();
+if('serviceWorker' in navigator)window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})});
+</script>
+</body>
+</html>
